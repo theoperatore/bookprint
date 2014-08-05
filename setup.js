@@ -1,6 +1,12 @@
 //
-// Sets up the page with the canvas.
+// Sets up the page with the canvas and style
 //
+var style = document.createElement('style');
+
+style.type = 'text/css';
+style.appendChild(document.createTextNode("html,body {width: 100%; height: 100%} * { margin: 0; padding: 0 }"));
+document.head.appendChild(style);
+
 var cvs = document.createElement("canvas"),
     ctx = cvs.getContext('2d');
 document.body.appendChild(cvs);

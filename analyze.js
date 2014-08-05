@@ -7,50 +7,63 @@ var tmp = "Call me Ishmael. Some years ago—never mind how long precisely—hav
 
 var sentences = nlp.pos(tmp);
 
-var pos = { x: cvs.width /4, y: cvs.height/4 };
-var state = false;
-var stroked = false;
+var center = { x: cvs.width/4, y: cvs.height/4 };
+var ITERATIONS = 100;
+//var A = O = 1 / Math.sqrt(2);
+var A = O = 5;
+var angle = 0;
+
+var web = [];
 //var steps = new Array(sentences.length);
 
-sentences.forEach(function(sentence, i) {
+function calculateDelta(angle) {
+    return (2*Math.PI*O) / Math.sqrt((A*A)*(1+(angle * angle)));
+}
 
-    ctx.beginPath();
+function calculateDX(angle) {
+    return ((A*angle*Math.cos(angle)) / (2*Math.PI));
+}
 
-    sentence.tokens.forEach(function(part, j) {
+function calculateDY(angle) {
+    return ((A*angle*Math.sin(angle)) / (2*Math.PI));   
+}
+for (var k = 0; k < ITERATIONS; k++) {
+    sentences.forEach(function(sentence, i) {
+        sentence.tokens.forEach(function(part, j) {
 
+            var d = calculateDelta(angle);
+            angle += d;
 
-        if (part.pos.parent === "noun") {
+            var x = center.x + calculateDX(angle);
+            var y = center.y + calculateDY(angle);
 
-            ctx.arc(pos.x, pos.y, i, 0, 2*Math.PI, false);
-
-            pos.x = (state) ? pos.x - (i + i/2) : pos.x + (i + i/2);
-            pos.y = (state) ? pos.y + (i + i/2) : pos.y - (i + i/2);
-            ctx.moveTo(pos.x, pos.y);
-
-            ctx.fillStyle = (state) ? "#00bfff" : "#ffb05c" ;
-            ctx.fill();
-            state = !state;
-
-        }
-        else if (part.pos.parent === "verb") {
-            var endx = (state) ? pos.x + i*i : pos.x - i*2;
-            var endy = (state) ? pos.y - i*2 : pos.y + i / 2;
-
-            var cpx = (state) ? pos.x + (Math.abs(endx - pos.x) /2 ) : pos.x - (Math.abs(endx - pos.x) /2 );
-            var cpy = (state) ? pos.y + i*5 : pos.y - i*2;
-
-            ctx.quadraticCurveTo(cpx, cpy, endx, endy);
-            ctx.strokeStyle = (state) ? "#00bfff" : "#ffb05c" ;
-            ctx.stroke();
-
-            pos.x = endx;
-            pos.y = endy;
-            state = !state;
-        }
-
-
+            if (part.pos.parent === "noun") {
+                web.push(["noun", x,y, "#00bfff"]);
+            }
+            else if (part.pos.parent === "verb") {
+                web.push(["verb", x,y, "#ffb05c"]);
+            }
+            else if (part.pos.parent === "adjective") {
+                web.push(["adjective", x,y, "#ff6bd0"]);
+            }
+            else if (part.pos.parent === "adverb") {
+                web.push(["adverb", x,y, "#80ff66"]);   
+            }
+            else {
+                web.push(["other", x,y, "#aaaaaa"]);
+            }
+        });
     });
+}
 
-    ctx.closePath();
-
+ctx.moveTo(center.x, center.y);
+web.forEach(function(parts) {
+    ctx.beginPath();
+    ctx.strokeStyle = parts[3];
+    //ctx.lineTo(parts[1], parts[2]);
+    ctx.arc(parts[1], parts[2], 2, 0, 2*Math.PI, false);
+    ctx.stroke();
+    //console.log("stroking: ", parts[1], parts[2]);
 });
+
+//console.log(web);
