@@ -1,0 +1,16 @@
+{
+  "name": "bookprint",
+  "version": "0.0.0",
+  "description": "takes text and creates an image based on the text!",
+  "main": "index.js",
+  "scripts": {
+    "test": "beefy analyze.js"
+  },
+  "author": "Alex Petersen <theoperatore@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "beefy": "^2.1.0",
+    "browserify": "^5.9.1",
+    "nlp_compromise": "^0.1.4"
+  }
+}
