@@ -7,6 +7,23 @@ style.type = 'text/css';
 style.appendChild(document.createTextNode("html,body {width: 100%; height: 100%} * { margin: 0; padding: 0 }"));
 document.head.appendChild(style);
 
+// Setup text file
+if (window.File && window.FileReader && window.FileList && window.Blob) {
+  
+  var input = document.createElement("input");
+  input.type = "file";
+  input.name = "files[]";
+  input.id = "file-input";
+
+  document.body.appendChild(input);
+}
+
+var p = document.createElement("p");
+p.id = "percent-completed";
+p.style = "display:inline-block";
+document.body.appendChild(p);
+
+//setup canvas
 var cvs = document.createElement("canvas"),
     ctx = cvs.getContext('2d');
 document.body.appendChild(cvs);
